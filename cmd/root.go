@@ -23,7 +23,7 @@ func Execute() {
 	if err != nil {
 		log.Fatalf("Auth failed %v", err)
 	}
-	rootCmd.AddCommand(activityByIDCmd(), lastActivityCmd(), zonesCmd())
+	rootCmd.AddCommand(activityByIDCmd(), lastActivityCmd(), zonesCmd(), statsCmd())
 	err = rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
