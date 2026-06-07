@@ -9,6 +9,6 @@ func notifyCmd() *cobra.Command {
 		Use:   "notify",
 		Short: "Send notifications.",
 	}
-	cmd.AddCommand(lastActivityNotifyCmd())
+	cmd.AddCommand(lastActivityNotifyCmd(), statsNotifyCmd())
 	return cmd
 }

@@ -1,27 +1,25 @@
 package cmd
 
 import (
-	"fmt"
-	"sort"
 	"sync"
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/zwinslett/strava-cli-go/calculator"
 	"github.com/zwinslett/strava-cli-go/format"
 	"github.com/zwinslett/strava-cli-go/model"
 )
 
-func statsCmd() *cobra.Command {
-	var asJSON bool
+func statsNotifyCmd() *cobra.Command {
 	var weekly bool
 	var monthly bool
-
 	cmd := &cobra.Command{
 		Use:   "stats",
-		Short: "Display stats for a given range.",
+		Short: "Send a notification about stats in a provided range",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var activities []model.Activity
 			var detailedActivities []model.DetailedActivity
+			var allZones []model.Zones
 			var err error
 			var wg sync.WaitGroup
 
@@ -34,9 +32,9 @@ func statsCmd() *cobra.Command {
 				return err
 			}
 			activitiesCh := make(chan model.DetailedActivity, len(activities))
-
+			zonesCh := make(chan []model.Zones, len(activities))
 			for _, activity := range activities {
-				wg.Add(1)
+				wg.Add(2)
 				go func(activity model.Activity) {
 					defer wg.Done()
 					detailedActivity, err := client.GetActivityById(cmd.Context(), activity.ID)
@@ -45,25 +43,37 @@ func statsCmd() *cobra.Command {
 					}
 					activitiesCh <- detailedActivity
 				}(activity)
+				go func(activity model.Activity) {
+					defer wg.Done()
+					zones, err := client.GetActivityZones(cmd.Context(), activity.ID)
+					if err != nil {
+						return
+					}
+					zonesCh <- zones
+				}(activity)
 			}
 			wg.Wait()
 			close(activitiesCh)
+			close(zonesCh)
 
 			for detailedActivity := range activitiesCh {
 				detailedActivities = append(detailedActivities, detailedActivity)
 			}
-			sort.Slice(detailedActivities, func(i, j int) bool {
-				return detailedActivities[i].StartDate.Before(detailedActivities[j].StartDate)
-			})
-			if asJSON {
-				return format.PrintAsJSON(detailedActivities)
+			for zones := range zonesCh {
+				allZones = append(allZones, zones...)
 			}
-			fmt.Println(format.ActivitiesTable(detailedActivities))
+			label := "Weekly"
+			if monthly {
+				label = "Monthly"
+			}
+			err = bot.SendMessage(cmd.Context(), format.ActivitiesMessage(detailedActivities, label)+"\n\n"+format.ZonesMessage(allZones, calculator.Heartrate))
+			if err != nil {
+				return err
+			}
 			return nil
 		},
 	}
-	cmd.Flags().BoolVar(&asJSON, "json", false, "Output as JSON")
-	cmd.Flags().BoolVar(&weekly, "weekly", false, "Get activities in the last week.")
-	cmd.Flags().BoolVar(&monthly, "monthly", false, "Get activites in the last month.")
+	cmd.Flags().BoolVar(&weekly, "weekly", false, "Return stats for the week.")
+	cmd.Flags().BoolVar(&monthly, "monthly", false, "Return stats for the month.")
 	return cmd
 }

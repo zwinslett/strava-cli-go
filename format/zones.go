@@ -27,7 +27,7 @@ func ZonesTable(zones []model.Zones, zoneType calculator.ZoneType) string {
 }
 
 func ZonesMessage(zones []model.Zones, zoneType calculator.ZoneType) string {
-	buckets := calculator.AggregateZones(zones, calculator.Heartrate)
+	buckets := calculator.AggregateZones(zones, zoneType)
 	var message strings.Builder
 	for _, bucket := range buckets {
 		fmt.Fprintf(&message,

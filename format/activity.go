@@ -24,7 +24,7 @@ func ActivityTable(activity model.DetailedActivity) string {
 	return table.Render()
 }
 
-func AvtivitiesTable(activities []model.DetailedActivity) string {
+func ActivitiesTable(activities []model.DetailedActivity) string {
 	var totalDistance float64
 	var totalMovingTime int
 	var aggregateAverageHeartrate float64
@@ -58,7 +58,7 @@ func AvtivitiesTable(activities []model.DetailedActivity) string {
 
 func ActivityMessage(activity model.DetailedActivity) string {
 	return fmt.Sprintf(
-		"🏃‍♂️ <u><b>%s</b></u>\n 🗓 %s\n 📍 %.2f miles\n ⏱ %s\n 👟 %s\n 💓 %.2f bpm",
+		"🏃‍♂️ <u><b>Last Activity</b></u>\n 🏷 %s\n 🗓 %s\n 📍 %.2f miles\n ⏱ %s\n 👟 %s\n 💓 %.2f bpm\n",
 		activity.Name,
 		activity.StartDate.Format("Jan 2, 2006"),
 		calculator.MetersToMiles(activity.Distance),
@@ -66,4 +66,22 @@ func ActivityMessage(activity model.DetailedActivity) string {
 		activity.Gear.Name,
 		activity.AverageHeartrate,
 	)
+}
+
+func ActivitiesMessage(activities []model.DetailedActivity, summaryType string) string {
+	var totalDistance float64
+	var totalMovingTime int
+	var aggregateAverageHeartrate float64
+
+	for _, activity := range activities {
+		totalDistance += activity.Distance
+		totalMovingTime += activity.MovingTime
+		aggregateAverageHeartrate += activity.AverageHeartrate
+	}
+	return fmt.Sprintf("<u><b>%s Summary</b></u>\n🏃‍♂️ Activities: %d\n📍 Miles: %.2f\n⏱ Moving Time: %s\n💓 Average Heartrate: %.2fbpm",
+		summaryType,
+		len(activities),
+		calculator.MetersToMiles(totalDistance),
+		calculator.PrettifiedTime(totalMovingTime),
+		aggregateAverageHeartrate/float64(len(activities)))
 }
