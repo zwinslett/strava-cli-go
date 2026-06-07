@@ -8,9 +8,13 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/zwinslett/strava-cli-go/strava"
+	"github.com/zwinslett/strava-cli-go/telegram"
 )
 
-var client *strava.Client
+var (
+	client *strava.Client
+	bot    *telegram.Client
+)
 
 var rootCmd = &cobra.Command{
 	Use:   "strava",
@@ -23,7 +27,8 @@ func Execute() {
 	if err != nil {
 		log.Fatalf("Auth failed %v", err)
 	}
-	rootCmd.AddCommand(activityByIDCmd(), lastActivityCmd(), zonesCmd(), statsCmd())
+	bot = telegram.NewClient()
+	rootCmd.AddCommand(activityByIDCmd(), lastActivityCmd(), zonesCmd(), statsCmd(), notifyCmd())
 	err = rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)

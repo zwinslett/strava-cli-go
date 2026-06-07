@@ -55,3 +55,15 @@ func AvtivitiesTable(activities []model.DetailedActivity) string {
 	)
 	return table.Render()
 }
+
+func ActivityMessage(activity model.DetailedActivity) string {
+	return fmt.Sprintf(
+		"🏃‍♂️ <u><b>%s</b></u>\n 🗓 %s\n 📍 %.2f miles\n ⏱ %s\n 👟 %s\n 💓 %.2f bpm",
+		activity.Name,
+		activity.StartDate.Format("Jan 2, 2006"),
+		calculator.MetersToMiles(activity.Distance),
+		calculator.PrettifiedTime(activity.MovingTime),
+		activity.Gear.Name,
+		activity.AverageHeartrate,
+	)
+}

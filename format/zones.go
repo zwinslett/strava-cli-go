@@ -2,6 +2,7 @@ package format
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/lipgloss/table"
@@ -23,4 +24,18 @@ func ZonesTable(zones []model.Zones, zoneType calculator.ZoneType) string {
 		)
 	}
 	return table.Render()
+}
+
+func ZonesMessage(zones []model.Zones, zoneType calculator.ZoneType) string {
+	buckets := calculator.AggregateZones(zones, calculator.Heartrate)
+	var message strings.Builder
+	for _, bucket := range buckets {
+		fmt.Fprintf(&message,
+			"💞 %dbpm - %dbpm\n⏱ %s\n📊 %.2f%%\n\n",
+			int(bucket.Min),
+			int(bucket.Max),
+			calculator.PrettifiedTime(int(bucket.Time)),
+			bucket.Percent*100)
+	}
+	return "📈 <u><b>Zones</b></u>\n" + message.String()
 }
