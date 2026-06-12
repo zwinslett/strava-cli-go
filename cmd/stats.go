@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/zwinslett/strava-cli-go/calculator"
 	"github.com/zwinslett/strava-cli-go/format"
 	"github.com/zwinslett/strava-cli-go/model"
 )
@@ -33,6 +34,8 @@ func statsCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			// Filter out non-running activities
+			activities = calculator.FilterByType("Run", activities)
 			activitiesCh := make(chan model.DetailedActivity, len(activities))
 
 			for _, activity := range activities {

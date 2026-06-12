@@ -32,6 +32,8 @@ func zonesCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			// Filter out non-running activities.
+			activities = calculator.FilterByType("Run", activities)
 			zonesCh := make(chan []model.Zones, len(activities))
 			for _, activity := range activities {
 				wg.Add(1)

@@ -20,10 +20,12 @@ func lastActivityNotifyCmd() *cobra.Command {
 			var wg sync.WaitGroup
 			wg.Add(2)
 
-			activity, err := client.GetRecentActivities(cmd.Context(), 1)
+			activity, err := client.GetRecentActivities(cmd.Context(), 10)
 			if err != nil {
 				return err
 			}
+			// Filter out non-running activities
+			activity = calculator.FilterByType("Run", activity)
 			go func() {
 				defer wg.Done()
 				detailedActivity, detailedActivityErr = client.GetActivityById(cmd.Context(), activity[0].ID)

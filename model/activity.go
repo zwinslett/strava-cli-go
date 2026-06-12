@@ -14,6 +14,7 @@ type Activity struct {
 	Calories         float64   `json:"calories"`
 	Description      string    `json:"description"`
 	StartDate        time.Time `json:"start_date"`
+	SportType        string    `json:"sport_type"`
 }
 
 type DetailedActivity struct {

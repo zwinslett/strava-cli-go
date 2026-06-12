@@ -45,6 +45,10 @@ func activityByIDCmd() *cobra.Command {
 			if zonesErr != nil {
 				return zonesErr
 			}
+			// Return an error if the activity is not a run.
+			if activity.SportType != "Run" {
+				return fmt.Errorf("activity %d is not a run. %s type activities are not supported", activity.ID, activity.SportType)
+			}
 			if asJSON {
 				return format.PrintAsJSON(model.ActivityReport{
 					Activity: activity,

@@ -31,6 +31,8 @@ func statsNotifyCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			// Filter out non-running activities.
+			activities = calculator.FilterByType("Run", activities)
 			activitiesCh := make(chan model.DetailedActivity, len(activities))
 			zonesCh := make(chan []model.Zones, len(activities))
 			for _, activity := range activities {
