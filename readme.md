@@ -14,4 +14,4 @@ It is useful for those who want a minimal and customizable interface for reading
 |  `last` | `--json`  | Retrieve data about the last activity.  |
 | `stats`  |  `--json`, `--weekly`, `--monthly` | Retrieve weekly or monthly stats.  |
 | `zones`  |  `--json`, `--weekly`, `--monthly` | Retrieve zones data from a weekly or monthly range.  |
-| `notify` | | | In conjunction with `stats` and `last` subcommands sends a notification to Telegram about stats or an individual acitivity. `stats` supports the `--weekly` and `--monthly` flags.
+| `notify` | | In conjunction with `stats` and `last` subcommands sends a notification to Telegram about stats or an individual acitivity. `stats` supports the `--weekly` and `--monthly` flags. |
