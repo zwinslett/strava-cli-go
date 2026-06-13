@@ -11,11 +11,11 @@ It is useful for those who want a minimal and customizable interface for reading
 > Note that this CLI is designed to only work with running activities. It should be relatively easy to modify it to work with other activities, but that is not currently on my roadmap. Feel free to make those additions yourself. You'll find that activities are filtered by the `FilterByType` function inside the calculator package.  
 
 ## Commands 
-|  Command | Flags  |  Use |
+|  Command | Flags  |  Use / Subcommands |
 |---|---|---|
 |  `last` | `--json`  | Retrieve data about the last activity.  |
-| `stats`  |  `--json`, `--weekly`, `--monthly` | Retrieve weekly or monthly stats.  |
-| `zones`  |  `--json`, `--weekly`, `--monthly` | Retrieve zones data from a weekly or monthly range.  |
+| `stats`  |  `--json`, `--weekly`, `--monthly` | Retrieve *rolling* weekly or monthly stats.  |
+| `zones`  |  `--json`, `--weekly`, `--monthly` | Retrieve zones data from a *rolling* weekly or monthly range.  |
 | `notify` | | In conjunction with `stats` and `last` subcommands sends a notification to Telegram about stats or an individual activity. `stats` supports the `--weekly` and `--monthly` flags. |
 |`activity`| | Retrieves data about a specific activity. Requires an activity id as an argument (`int64`)|
 
