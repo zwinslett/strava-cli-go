@@ -1,6 +1,8 @@
 package calculator
 
 import (
+	"sort"
+
 	"github.com/zwinslett/strava-cli-go/model"
 )
 
@@ -19,6 +21,10 @@ func AggregateGear(activities []model.DetailedActivity) []model.Gear {
 			Distance: distance,
 		})
 	}
+
+	sort.Slice(aggregatedGear, func(i, j int) bool {
+		return aggregatedGear[i].Distance > aggregatedGear[j].Distance
+	})
 
 	return aggregatedGear
 }

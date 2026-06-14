@@ -28,7 +28,7 @@ func Execute() {
 		log.Fatalf("Auth failed %v", err)
 	}
 	bot = telegram.NewClient()
-	rootCmd.AddCommand(activityByIDCmd(), lastActivityCmd(), zonesCmd(), statsCmd(), notifyCmd())
+	rootCmd.AddCommand(activityByIDCmd(), lastActivityCmd(), zonesCmd(), statsCmd(), notifyCmd(), daemonCmd())
 	err = rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)

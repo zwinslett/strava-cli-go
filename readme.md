@@ -1,10 +1,10 @@
 # Strava CLI 
 
-This is a Golang (Cobra) command line interface for interacting with the Strava and Telegram APIs that allows users to: 
+This is a Golang (Cobra) command line interface and daemon that interacts with the Strava and Telegram APIs that allows users to: 
 
-- Request data from Strava in a JSON format for piping with `jq` etc. 
+- Request data from Strava in a JSON format with composable commands for piping with `jq` etc. 
 - Request data from Strava right from their terminal for viewing. 
-- Send notifications over the Telegram Bot API to chats. 
+- Configure a daemon to send custom notifications based on Strava data over the Telegram Bot API. 
 
 It is useful for those who want a minimal and customizable interface for reading and analyzing Strava data, those who want to automate notifications and other processes based on their activities, and those who want a lightweight (i.e. not a full MCP) interface that an LLM can interact with. 
 
@@ -17,7 +17,8 @@ It is useful for those who want a minimal and customizable interface for reading
 | `stats`  |  `--json`, `--weekly`, `--monthly` | Retrieve *rolling* weekly or monthly stats.  |
 | `zones`  |  `--json`, `--weekly`, `--monthly` | Retrieve zones data from a *rolling* weekly or monthly range.  |
 | `notify` | | In conjunction with `stats` and `last` subcommands sends a notification to Telegram about stats or an individual activity. `stats` supports the `--weekly` and `--monthly` flags. |
-|`activity`| | Retrieves data about a specific activity. Requires an activity id as an argument (`int64`)|
+|`activity`|`--json` | Retrieves data about a specific activity. Requires an activity id as an argument (`int64`)|
+| `daemon`| | Kicks off the daemon for scheduling Telegram messages |
 
 ## Setting up environment variables
 

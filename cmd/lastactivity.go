@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/spf13/cobra"
 	"github.com/zwinslett/strava-cli-go/calculator"
@@ -17,32 +16,9 @@ func lastActivityCmd() *cobra.Command {
 		Use:   "last",
 		Short: "Display your last activity",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var detailedActivity model.DetailedActivity
-			var zones []model.Zones
-			var detailedActivityErr, zonesErr error
-			var wg sync.WaitGroup
-			wg.Add(2)
-
-			activity, err := client.GetRecentActivities(cmd.Context(), 10)
+			detailedActivity, zones, err := fetchLastActivity(cmd.Context())
 			if err != nil {
 				return err
-			}
-			// Filter out non-running activities.
-			activity = calculator.FilterByType("Run", activity)
-			go func() {
-				defer wg.Done()
-				detailedActivity, detailedActivityErr = client.GetActivityById(cmd.Context(), activity[0].ID)
-			}()
-			go func() {
-				defer wg.Done()
-				zones, zonesErr = client.GetActivityZones(cmd.Context(), activity[0].ID)
-			}()
-			wg.Wait()
-			if detailedActivityErr != nil {
-				return detailedActivityErr
-			}
-			if zonesErr != nil {
-				return zonesErr
 			}
 			if asJSON {
 				return format.PrintAsJSON(model.ActivityReport{
