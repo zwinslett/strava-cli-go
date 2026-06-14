@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"context"
+	"log"
 	"sync"
 	"time"
 
 	"github.com/zwinslett/strava-cli-go/calculator"
 	"github.com/zwinslett/strava-cli-go/format"
 	"github.com/zwinslett/strava-cli-go/model"
+	"github.com/zwinslett/strava-cli-go/telegram"
 )
 
 type DateRange = string
@@ -126,4 +128,36 @@ func activityMessageBuilder(ctx context.Context) error {
 		return err
 	}
 	return nil
+}
+
+func handleUpdates(ctx context.Context, result telegram.Result) error {
+	var err error
+	if result.Message.Text == telegram.CmdLatest {
+		return activityMessageBuilder(ctx)
+	} else {
+		err = bot.SendMessage(ctx, "Unsupported Command")
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func pollForUpdates(ctx context.Context) {
+	offset := 0
+	for {
+		results, err := bot.GetUpdates(ctx, 10, 60, offset)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		for _, result := range results {
+			err := handleUpdates(ctx, result)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			offset = int(result.UpdateID) + 1
+		}
+	}
 }
