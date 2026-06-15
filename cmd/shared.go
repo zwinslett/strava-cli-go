@@ -131,16 +131,16 @@ func activityMessageBuilder(ctx context.Context) error {
 }
 
 func handleUpdates(ctx context.Context, result telegram.Result) error {
-	var err error
-	if result.Message.Text == telegram.CmdLatest {
+	switch result.Message.Text {
+	case telegram.CmdLatest:
 		return activityMessageBuilder(ctx)
-	} else {
-		err = bot.SendMessage(ctx, "Unsupported Command")
+	case telegram.CmdWeekly:
+		return statsMessageBuilder(ctx, Weekly)
+	case telegram.CmdMonthly:
+		return statsMessageBuilder(ctx, Monthly)
+	default:
+		return bot.SendMessage(ctx, "Unsupported Command")
 	}
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func pollForUpdates(ctx context.Context) {
