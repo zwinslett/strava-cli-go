@@ -85,3 +85,34 @@ func ActivitiesMessage(activities []model.DetailedActivity, summaryType string) 
 		calculator.PrettifiedTime(totalMovingTime),
 		aggregateAverageHeartrate/float64(len(activities)))
 }
+
+func ActivitiesComparisonMessage(previousActivities []model.DetailedActivity, currentActivities []model.DetailedActivity, summaryType string) string {
+	var previousTotalDistance, currentTotalDistance float64
+	var previousTotalMovingTime, currentTotalMovingTime int
+	var previousAggregateAverageHeartrate, currentAggregateAverageHeartrate float64
+
+	for _, previousActivity := range previousActivities {
+		previousTotalDistance += previousActivity.Distance
+		previousTotalMovingTime += previousActivity.MovingTime
+		previousAggregateAverageHeartrate += previousActivity.AverageHeartrate
+	}
+
+	for _, currentActivity := range currentActivities {
+		currentTotalDistance += currentActivity.Distance
+		currentTotalMovingTime += currentActivity.MovingTime
+		currentAggregateAverageHeartrate += currentActivity.AverageHeartrate
+	}
+
+	distanceDiff, movingTimeDiff, averageHeartrateDiff := calculator.ActivityComparison(previousTotalDistance, currentTotalDistance, previousTotalMovingTime, currentTotalMovingTime, previousAggregateAverageHeartrate/float64(len(previousActivities)), currentAggregateAverageHeartrate/float64(len(currentActivities)))
+
+	return fmt.Sprintf("<u><b>%s Summary</b></u>\n🏃‍♂️  Activities:%d(vs. %d)\n📍  Miles: %.2f(%+.2f%%)\n⏱  Moving Time:%s(%+.2f%%)\n💓 Average Heartrate: %.2fbpm(%+.2f%%)",
+		summaryType,
+		len(currentActivities),
+		len(previousActivities),
+		calculator.MetersToMiles(currentTotalDistance),
+		distanceDiff,
+		calculator.PrettifiedTime(currentTotalMovingTime),
+		movingTimeDiff,
+		currentAggregateAverageHeartrate/float64(len(currentActivities)),
+		averageHeartrateDiff)
+}

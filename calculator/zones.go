@@ -48,3 +48,7 @@ func AggregateZones(zones []model.Zones, zoneType ZoneType) []model.Distribution
 
 	return aggregatedBuckets
 }
+
+func CompareBuckets(previousBucket model.DistributionBucketsAggregated, currentBucket model.DistributionBucketsAggregated) float64 {
+	return currentBucket.Percent - previousBucket.Percent
+}

@@ -39,3 +39,19 @@ func ZonesMessage(zones []model.Zones, zoneType calculator.ZoneType) string {
 	}
 	return "📈 <u><b>Zones</b></u>\n" + message.String()
 }
+
+func ZonesComparisonMessage(previousZones []model.Zones, currentZones []model.Zones, zoneType calculator.ZoneType) string {
+	previousBuckets := calculator.AggregateZones(previousZones, zoneType)
+	currentBuckets := calculator.AggregateZones(currentZones, zoneType)
+	var message strings.Builder
+	for i, bucket := range currentBuckets {
+		fmt.Fprintf(&message,
+			"💞%dbpm - %dbpm\n⏱ %s\n📊 %.2f%%(%+.2f%%)\n\n",
+			int(bucket.Min),
+			int(bucket.Max),
+			calculator.PrettifiedTime(int(bucket.Time)),
+			bucket.Percent*100,
+			calculator.CompareBuckets(previousBuckets[i], bucket))
+	}
+	return "📈 <u><b>Zones</b></u>\n" + message.String()
+}

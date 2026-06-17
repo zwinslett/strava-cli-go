@@ -17,3 +17,11 @@ func FilterByType(sportType string, activities []model.Activity) []model.Activit
 	}
 	return filtered
 }
+
+func ActivityComparison(previousDistance float64, currentDistance float64, previousMovingTime int, currentMovingTime int, previousAverageHeartrate float64, currentAverageHeartRate float64) (float64, float64, float64) {
+	distanceDiff := (currentDistance - previousDistance) / previousDistance * 100
+	movingTimeDiff := float64(currentMovingTime-previousMovingTime) / float64(previousMovingTime) * 100
+	averageHeartrateDiff := (currentAverageHeartRate - previousAverageHeartrate) / previousAverageHeartrate * 100
+
+	return distanceDiff, movingTimeDiff, averageHeartrateDiff
+}
