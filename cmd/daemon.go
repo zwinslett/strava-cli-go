@@ -42,7 +42,7 @@ func daemonCmd() *cobra.Command {
 				return dailyErr
 			}
 			scheduler.Start()
-			go pollForUpdates(cmd.Context())
+			go pollForUpdates(context.Background())
 
 			select {}
 		},
